@@ -1,0 +1,72 @@
+ import vendedores.*
+ import geografia.*
+ 
+ 
+describe "Test primera parte" {
+
+		const buenosAires = new Provincia(poblacion=7000000)
+		const hurlingham = new Ciudad(provincia=buenosAires)
+		const moron = new Ciudad(provincia=buenosAires)
+		const vendedorFijo1 = new VendedorFijo(ciudadDondeVive=hurlingham)
+		const viajante1 = new Viajante(provinciasHabilitadas=#{buenosAires})
+		const santaFe = new Provincia(poblacion=5000000)
+		const comercioC1 = new ComercioCorresponsal(ciudadesConSucursales=#{hurlingham,moron})
+		const certi1 = new Certificaciones(puntos=55,esSobreProductos=true)
+		const certi2 = new Certificaciones(puntos=15,esSobreProductos=true)
+		const certi3 = new Certificaciones(puntos=15,esSobreProductos=false)
+
+		const chivilcoy = new Ciudad(provincia=buenosAires)
+		const bragado = new Ciudad(provincia=buenosAires)
+		const lobos = new Ciudad(provincia=buenosAires)
+		const pergamino = new Ciudad(provincia=buenosAires)
+		const zarate = new Ciudad(provincia=buenosAires)
+		const rosario = new Ciudad(provincia=santaFe)
+		const rafaela = new Ciudad(provincia=santaFe)
+		const cordoba = new Provincia(poblacion=5000000)
+		const sanFrancisco = new Ciudad(provincia=cordoba)
+		const entreRios = new Provincia(poblacion=3000000)
+		const diamante = new Ciudad(provincia=entreRios)
+		const amstrong = new Ciudad(provincia=santaFe)
+		const comercioInfluyente1 = new ComercioCorresponsal(ciudadesConSucursales=#{chivilcoy,bragado,lobos,pergamino,zarate})
+		const comercioInfluyente2 = new ComercioCorresponsal(ciudadesConSucursales=#{rosario,rafaela,sanFrancisco,diamante})
+		const comercioNoInfluyente1 = new ComercioCorresponsal(ciudadesConSucursales=#{rafaela,amstrong,diamante})
+
+	method initialize() {
+		vendedorFijo1.agregarCertificacion(certi1)
+		vendedorFijo1.agregarCertificacion(certi2)
+		vendedorFijo1.agregarCertificacion(certi3)
+	}
+	
+	test "un vendedorFijo puede trabajar en la ciudad donde vive" {
+		assert.that(vendedorFijo1.puedeTrabajarEn(hurlingham))
+	}	
+	
+	test "un Viajante puede trabajar en ciudad de la provicia" {
+		assert.that(viajante1.puedeTrabajarEn(hurlingham))
+	}
+	
+	test "comercio corresponsal puede trabajar en ciudad con sucursal" {
+		assert.that(comercioC1.puedeTrabajarEn(moron))
+	}
+	
+	test "el vendedorFijo1 es versatil" {
+		assert.that(vendedorFijo1.esVersatil())
+	}
+	
+	test "el vendedor ya no es versatil" {
+		vendedorFijo1.removerCertificacion(certi3)
+		assert.notThat(vendedorFijo1.esVersatil())
+	}
+	
+	test "es influyente, está en Chivilcoy, Bragado, Lobos, Pergamino y Zárate" {
+		assert.that(comercioInfluyente1.esInfluyente())
+	}
+	
+	test "es influyente, Rosario (Santa Fe), Rafaela (Santa Fe), San Francisco (Córdoba), y Diamante (Entre Ríos)" {
+		assert.that(comercioInfluyente2.esInfluyente())
+	}
+	
+	test "no es influyente son 4 ciudades y 2 provincias. Rosario, Rafaela, Amstrong (Santa Fe) y Diamante" {
+		assert.notThat(comercioNoInfluyente1.esInfluyente())
+	}
+}
